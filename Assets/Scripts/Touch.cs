@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class Touch : MonoBehaviour
 {
-  private Controls player;
+  private Controls controller;
 
   void Start()
   {
-    player = FindObjectOfType<Controls>();
+    controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Controls>();
   }
 
   public void Space()
   {
-    player.space = true;
+    controller.space();
   }
 }
