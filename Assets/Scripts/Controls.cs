@@ -6,8 +6,9 @@ public class Controls : MonoBehaviour
 {
   
   public GameObject doggoPrefab;    // Re-usable template for doggo
+  private float dogHeight;
   private float height = 0;
-  Camera mainCam;
+  Camera mainCam = Camera.main;
 
   private GameObject current;   // Current doggo
 
@@ -15,22 +16,26 @@ public class Controls : MonoBehaviour
   void Start()
   {
     current = createDoggo(height++);    // Our first (and hence best) doggo
+    dogHeight = doggoPrefab.GetComponent<BoxCollider2D>().size.y * doggoPrefab.transform.localScale.y;
   }
 
   // Update is called once per frame
   void Update()
   {
+    mainCam = Camera.main;
+    float step = 2 * Time.deltaTime;
+    mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, new Vector3(mainCam.transform.position.x, height*dogHeight - dogHeight, mainCam.transform.position.z), step);
   }
 
   public void space()
   {
       current.GetComponent<Movement>().stopMoving();    // "Stay!"
       current = createDoggo(height++);
-    }
+  }
   
   GameObject createDoggo(float height)  // Another doggo!!
   {
-    return Instantiate(doggoPrefab, new Vector3(0, 2 * height, 0), Quaternion.identity);
+    return Instantiate(doggoPrefab, new Vector3(0, dogHeight * height, 0), Quaternion.identity);
   }
 
 }
