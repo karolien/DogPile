@@ -14,16 +14,21 @@ public class Controls : MonoBehaviour
   public bool newDog = false;
   public int score = 0;
   public Text scoreText;
-
+  public Canvas gameOverScreen;
+  public Canvas gamePlayingScreen;
+  private bool gameEnded;
   private GameObject current;   // Current doggo
 
   // Use this for initialization
   void Start()
   {
+    gamePlayingScreen.enabled = true;
     current = createDoggo(height++);    // Our first (and hence best) doggo
     dogHeight = doggoPrefab.GetComponent<BoxCollider2D>().size.y * doggoPrefab.transform.localScale.y;
     mainCam = Camera.main;
     newDog = true;
+    gameOverScreen.enabled = false;
+    gameEnded = false;
   }
 
   // Update is called once per frame
@@ -39,7 +44,24 @@ public class Controls : MonoBehaviour
       newDog = false;
       StartCoroutine(WaitThenDo());
     }
-    /*current = createDoggo(height++);*/
+  }
+  public void gameOver() {
+    gameEnded = true;
+    gameOverScreen.enabled = true;
+    gamePlayingScreen.enabled = false;
+    newDog = false;
+  }
+  public void newGame() {
+    GameObject[] dogs = GameObject.FindGameObjectsWithTag("dog");
+    foreach (GameObject item in dogs)
+    {
+      Destroy(item);
+    }
+    height = 0;
+    score = 0;
+    UpdateScore();
+    gameOverScreen.enabled = false;
+    Start();
   }
   
   GameObject createDoggo(float height)  // Another doggo!!
@@ -55,11 +77,13 @@ public class Controls : MonoBehaviour
   IEnumerator WaitThenDo()
   {
     yield return new WaitForSeconds(1);
-    current = createDoggo(height++);
-    newDog = true;
-    score++;
-    Debug.Log("score: "+ score);
-    UpdateScore();
+    if(!gameEnded) {
+      current = createDoggo(height++);
+      newDog = true;
+      score++;
+      Debug.Log("score: " + score);
+      UpdateScore();
+    }
   }
 
 }

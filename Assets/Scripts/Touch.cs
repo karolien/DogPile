@@ -15,4 +15,7 @@ public class Touch : MonoBehaviour
   {
     controller.space();
   }
+  public void Restart() {
+    controller.newGame();
+  }
 }

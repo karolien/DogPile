@@ -6,30 +6,36 @@ public class Movement : MonoBehaviour {
 
     private Rigidbody2D rb;
     public IEnumerator co;
-    // Use this for initialization
-    void Start () {
+    private Controls controller;
+  // Use this for initialization
+  void Start () {
+        controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Controls>();
         rb = GetComponent<Rigidbody2D>();
         co = MoveObject();
         StartCoroutine(co);
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update() { 
+    if (Input.GetMouseButtonDown(0))
+    {
+      //Touch anywhere
+      controller.space();
+    } 
 		
 	}
-  void OnTriggerEvent(Collision col)
+  void OnTriggerEnter2D(Collider2D col)
   {
-    Debug.Log("hit boundary");
     if (col.gameObject.name == "GameBoundary")
     {
-      Debug.Log("Game over");
+      controller.gameOver();
     }
   }
 
   public void stopMoving()
   {
-      rb.simulated = true;    // Enable rigibody physics
-      StopCoroutine(co);      // Stop moving
+    rb.simulated = true;    // Enable rigibody physics
+    StopCoroutine(co);      // Stop moving
   }
 
   private IEnumerator MoveObject()
