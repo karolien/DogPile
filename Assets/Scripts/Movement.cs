@@ -6,14 +6,10 @@ public class Movement : MonoBehaviour {
 
     private Rigidbody2D rb;
     public IEnumerator co;
-
-    public float MOVEMENT_TIME = 2.0f; // The object moves for 2 seconds
-    public float MOVEMENT_DISTANCE = 1.0f; // Distance the object should move
-
     // Use this for initialization
     void Start () {
         rb = GetComponent<Rigidbody2D>();
-        co = MoveObject(MOVEMENT_DISTANCE);
+        co = MoveObject();
         StartCoroutine(co);
 	}
 	
@@ -21,37 +17,47 @@ public class Movement : MonoBehaviour {
 	void Update () {
 		
 	}
-
-    public void stopMoving()
+  void OnTriggerEvent(Collision col)
+  {
+    Debug.Log("hit boundary");
+    if (col.gameObject.name == "GameBoundary")
     {
-        rb.simulated = true;    // Enable rigibody physics
-        StopCoroutine(co);      // Stop moving
+      Debug.Log("Game over");
     }
+  }
 
-    private IEnumerator MoveObject(float distance)
-    {
-      while (true) {
-        Vector3 currentPosition = this.transform.position;
-        Vector3 targetPosition = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);
-        float currentTime = 0.0f;
+  public void stopMoving()
+  {
+      rb.simulated = true;    // Enable rigibody physics
+      StopCoroutine(co);      // Stop moving
+  }
 
-        while (currentTime <= MOVEMENT_TIME)
-        {
-          float movementFactor = currentTime / MOVEMENT_TIME;
-          this.transform.position = Vector3.Lerp(currentPosition, targetPosition, movementFactor);
-          currentTime += Time.deltaTime;
-          yield return null;
-        }
-        currentPosition = this.transform.position;
-        targetPosition = new Vector3(this.transform.position.x - distance, this.transform.position.y, this.transform.position.z);
-        currentTime = 0.0f;
-        while (currentTime <= MOVEMENT_TIME)
-        {
-          float movementFactor = currentTime / MOVEMENT_TIME;
-          this.transform.position = Vector3.Lerp(currentPosition, targetPosition, movementFactor);
-          currentTime += Time.deltaTime;
-          yield return null;
-        }
+  private IEnumerator MoveObject()
+  {
+  float distance = 4F;
+  float movement_time = 1.0f; // The object moves for 2 seconds
+    while (true) {
+      Vector3 currentPosition = this.transform.position;
+      Vector3 targetPosition = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);
+      float currentTime = 0.0f;
+
+      while (currentTime <= movement_time)
+      {
+        float movementFactor = currentTime / movement_time;
+        this.transform.position = Vector3.Lerp(currentPosition, targetPosition, movementFactor);
+        currentTime += Time.deltaTime;
+        yield return null;
+      }
+      currentPosition = this.transform.position;
+      targetPosition = new Vector3(this.transform.position.x - distance, this.transform.position.y, this.transform.position.z);
+      currentTime = 0.0f;
+      while (currentTime <= movement_time)
+      {
+        float movementFactor = currentTime / movement_time;
+        this.transform.position = Vector3.Lerp(currentPosition, targetPosition, movementFactor);
+        currentTime += Time.deltaTime;
+        yield return null;
       }
     }
+  }
 }
