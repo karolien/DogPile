@@ -9,6 +9,7 @@ public class Controls : MonoBehaviour
   private float dogHeight;
   private float height = 0;
   Camera mainCam = Camera.main;
+  private Vector3 camVelocity = Vector3.zero;
 
   private GameObject current;   // Current doggo
 
@@ -23,8 +24,7 @@ public class Controls : MonoBehaviour
   void Update()
   {
     mainCam = Camera.main;
-    float step = 2 * Time.deltaTime;
-    mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, new Vector3(mainCam.transform.position.x, height*dogHeight - dogHeight, mainCam.transform.position.z), step);
+    mainCam.transform.position = Vector3.SmoothDamp(mainCam.transform.position, new Vector3(mainCam.transform.position.x, height * dogHeight - dogHeight, mainCam.transform.position.z), ref camVelocity ,3);
   }
 
   public void space()
