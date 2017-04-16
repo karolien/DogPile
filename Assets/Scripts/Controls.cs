@@ -14,16 +14,19 @@ public class Controls : MonoBehaviour
   public bool newDog = false;
   public int score = 0;
   public Text scoreText;
+  public Text scored;
   public Canvas gameOverScreen;
   public Canvas gamePlayingScreen;
   private bool gameEnded;
   private GameObject current;   // Current doggo
+  public Sprite[] dogBreeds;
 
   // Use this for initialization
   void Start()
   {
     gamePlayingScreen.enabled = true;
     current = createDoggo(height++);    // Our first (and hence best) doggo
+    chooseDogBreed();
     dogHeight = doggoPrefab.GetComponent<BoxCollider2D>().size.y * doggoPrefab.transform.localScale.y;
     mainCam = Camera.main;
     newDog = true;
@@ -34,7 +37,7 @@ public class Controls : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    mainCam.transform.position = Vector3.SmoothDamp(mainCam.transform.position, new Vector3(mainCam.transform.position.x, height * dogHeight - dogHeight, mainCam.transform.position.z), ref camVelocity ,3);
+    mainCam.transform.position = Vector3.SmoothDamp(mainCam.transform.position, new Vector3(mainCam.transform.position.x, height * dogHeight - dogHeight, mainCam.transform.position.z), ref camVelocity ,1);
   }
 
   public void space()
@@ -46,10 +49,26 @@ public class Controls : MonoBehaviour
     }
   }
   public void gameOver() {
-    gameEnded = true;
-    gameOverScreen.enabled = true;
-    gamePlayingScreen.enabled = false;
-    newDog = false;
+    if (!gameEnded)
+    {
+      gameEnded = true;
+      if (score > 1)
+      {
+        score = score - 1;
+      }
+      if (score != 1)
+      {
+        scored.text = "You piled " + (score) + " dogs";
+      }
+      else
+      {
+        scored.text = "You piled " + (score) + " dog";
+      }
+
+      gameOverScreen.enabled = true;
+      gamePlayingScreen.enabled = false;
+      newDog = false;
+    }
   }
   public void newGame() {
     GameObject[] dogs = GameObject.FindGameObjectsWithTag("dog");
@@ -66,7 +85,7 @@ public class Controls : MonoBehaviour
   
   GameObject createDoggo(float height)  // Another doggo!!
   {
-    return Instantiate(doggoPrefab, new Vector3(-1, dogHeight * height, 0), Quaternion.identity);
+    return Instantiate(doggoPrefab, new Vector3(-2, dogHeight * height, 0), Quaternion.identity);
   }
 
   void UpdateScore()
@@ -74,14 +93,19 @@ public class Controls : MonoBehaviour
     scoreText.text = "Dogs Piled: " + score;
   }
 
+  void chooseDogBreed() {
+    int i = Random.Range(0, dogBreeds.Length);
+    current.GetComponent<SpriteRenderer>().sprite = dogBreeds[i];
+  }
+
   IEnumerator WaitThenDo()
   {
     yield return new WaitForSeconds(1);
     if(!gameEnded) {
       current = createDoggo(height++);
+      chooseDogBreed();
       newDog = true;
       score++;
-      Debug.Log("score: " + score);
       UpdateScore();
     }
   }

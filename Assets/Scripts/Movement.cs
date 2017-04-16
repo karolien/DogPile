@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour {
 
-    private Rigidbody2D rb;
-    public IEnumerator co;
-    private Controls controller;
+  private Rigidbody2D rb;
+  public IEnumerator co;
+  private Controls controller;
   // Use this for initialization
   void Start () {
-        controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Controls>();
-        rb = GetComponent<Rigidbody2D>();
-        co = MoveObject();
-        StartCoroutine(co);
+    controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Controls>();
+    rb = GetComponent<Rigidbody2D>();
+    co = MoveObject();
+    StartCoroutine(co);
 	}
 	
 	// Update is called once per frame
@@ -36,12 +36,19 @@ public class Movement : MonoBehaviour {
   {
     rb.simulated = true;    // Enable rigibody physics
     StopCoroutine(co);      // Stop moving
+    StartCoroutine(waitThenFreeze());
+  }
+
+  private IEnumerator waitThenFreeze() {
+    yield return new WaitForSeconds(10);
+    rb.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
   }
 
   private IEnumerator MoveObject()
   {
-  float distance = 4F;
-  float movement_time = 1.0f; // The object moves for 2 seconds
+    float distance = 4F;
+    /*float movement_time = 0.8f;*/
+    float movement_time = Random.Range (0.5f, 2f);
     while (true) {
       Vector3 currentPosition = this.transform.position;
       Vector3 targetPosition = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);

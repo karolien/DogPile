@@ -10,12 +10,8 @@ public class Touch : MonoBehaviour
   {
     controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Controls>();
   }
-
-  public void Space()
-  {
-    controller.space();
-  }
-  public void Restart() {
+  public void Restart() 
+{
     controller.newGame();
   }
 }
