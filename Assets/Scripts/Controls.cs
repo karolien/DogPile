@@ -42,7 +42,7 @@ public class Controls : MonoBehaviour
 
   public void space()
   {
-    if(newDog) {
+    if(newDog && !gameEnded) {
       current.GetComponent<Movement>().stopMoving();    // "Stay!"
       newDog = false;
       StartCoroutine(WaitThenDo());
@@ -52,7 +52,7 @@ public class Controls : MonoBehaviour
     if (!gameEnded)
     {
       gameEnded = true;
-      if (score > 1)
+      if (score >= 1)
       {
         score = score - 1;
       }
@@ -80,7 +80,8 @@ public class Controls : MonoBehaviour
     score = 0;
     UpdateScore();
     gameOverScreen.enabled = false;
-    Start();
+    gameEnded = false;
+    StartCoroutine(WaitThenDo());
   }
   
   GameObject createDoggo(float height)  // Another doggo!!
